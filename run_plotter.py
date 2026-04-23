@@ -15,10 +15,12 @@ def read_until_ready(ser, timeout=10):
     return False
 
 def send_and_wait_ok(ser, cmd, timeout=20):
+    print("SENDING:", repr(cmd))
+
     ser.write((cmd + "\n").encode())
     ser.flush()
 
-    start = time.time()
+    start = time.time() 
     while time.time() - start < timeout:
         if ser.in_waiting:
             line = ser.readline().decode(errors="ignore").strip()
@@ -65,10 +67,11 @@ def main():
             print("Did not receive READY from Arduino.")
             sys.exit(1)
 
+       
         cfg = (
-            f"CFG {args.width:.3f} {args.height:.3f} "
-            f"{args.steps_per_mm_x:.6f} {args.steps_per_mm_y:.6f} "
-            f"{args.pen_up_angle} {args.pen_down_angle} {args.feed_us}"
+        f"CFG {args.width:.3f} {args.height:.3f} "
+        f"{args.steps_per_mm_x:.6f} {args.steps_per_mm_y:.6f} "
+        f"{args.pen_up_angle} {args.pen_down_angle} {args.feed_us}"
         )
         send_and_wait_ok(ser, cfg)
 
